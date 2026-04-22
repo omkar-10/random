@@ -1,0 +1,35 @@
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
+
+# -------------------------------
+# Sample Data (replace with dataset)
+# -------------------------------
+docs = [
+    "I love AI and machine learning!",
+    "Social media analysis is interesting",
+    "Python is great for data science",
+    "AI is transforming technology"
+]
+
+# -------------------------------
+# Keyword Extraction (TF-IDF)
+# -------------------------------
+tfidf = TfidfVectorizer(stop_words='english')
+X_tfidf = tfidf.fit_transform(docs)
+
+keywords = tfidf.get_feature_names_out()
+print("Top Keywords:", keywords[:10])
+
+# -------------------------------
+# Topic Modeling (LDA)
+# -------------------------------
+cv = CountVectorizer(stop_words='english')
+X_cv = cv.fit_transform(docs)
+
+lda = LatentDirichletAllocation(n_components=2, random_state=42)
+lda.fit(X_cv)
+
+# Display Topics
+for i, topic in enumerate(lda.components_):
+    print(f"Topic {i}:",
+          [cv.get_feature_names_out()[j] for j in topic.argsort()[-5:]])

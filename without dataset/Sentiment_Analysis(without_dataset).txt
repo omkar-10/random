@@ -1,0 +1,49 @@
+import pandas as pd
+from textblob import TextBlob
+
+# -------------------------------
+# Sample Dataset
+# -------------------------------
+data = {
+    "tweet": [
+        "I love AI, it's amazing!",
+        "This is the worst experience ever",
+        "Python is so useful and fun",
+        "I hate bugs in code",
+        "Data science is awesome",
+        "This project is terrible"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+# -------------------------------
+# Function to get sentiment
+# -------------------------------
+def get_sentiment(text):
+    analysis = TextBlob(text)
+    polarity = analysis.sentiment.polarity
+
+    if polarity > 0:
+        return "Positive"
+    elif polarity < 0:
+        return "Negative"
+    else:
+        return "Neutral"
+
+# -------------------------------
+# Apply sentiment analysis
+# -------------------------------
+df["sentiment"] = df["tweet"].apply(get_sentiment)
+
+# -------------------------------
+# Count sentiments
+# -------------------------------
+sentiment_counts = df["sentiment"].value_counts()
+print(sentiment_counts)
+
+# -------------------------------
+# Display results
+# -------------------------------
+print("\nDetailed Results:")
+print(df)

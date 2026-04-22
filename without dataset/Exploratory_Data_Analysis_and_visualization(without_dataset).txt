@@ -1,0 +1,60 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# -------------------------------
+# Sample Dataset (replace with your dataset)
+# -------------------------------
+df = pd.DataFrame({
+    "type": ["video", "image", "text", "video", "image", "text"],
+    "likes": [120, 80, 30, 150, 60, 20],
+    "comments": [30, 10, 5, 40, 8, 2],
+    "shares": [50, 20, 3, 60, 15, 1]
+})
+
+# -------------------------------
+# 1. Basic Info
+# -------------------------------
+print("First 5 rows:\n", df.head())
+print("\nDataset Info:\n")
+print(df.info())
+print("\nStatistical Summary:\n", df.describe())
+
+# -------------------------------
+# 2. Check Missing Values
+# -------------------------------
+print("\nMissing Values:\n", df.isnull().sum())
+
+# -------------------------------
+# 3. Feature Engineering
+# -------------------------------
+df["engagement"] = df["likes"] + df["comments"] + df["shares"]
+
+# -------------------------------
+# 4. Group Analysis
+# -------------------------------
+avg_eng = df.groupby("type")["engagement"].mean()
+print("\nAverage Engagement:\n", avg_eng)
+
+# -------------------------------
+# 5. Visualization
+# -------------------------------
+
+# Bar Chart
+avg_eng.plot(kind='bar')
+plt.title("Average Engagement by Content Type")
+plt.xlabel("Content Type")
+plt.ylabel("Engagement")
+plt.show()
+
+# Scatter Plot
+plt.scatter(df["likes"], df["shares"])
+plt.xlabel("Likes")
+plt.ylabel("Shares")
+plt.title("Likes vs Shares")
+plt.show()
+
+# Histogram
+df["engagement"].plot(kind='hist', bins=5)
+plt.title("Engagement Distribution")
+plt.xlabel("Engagement")
+plt.show()

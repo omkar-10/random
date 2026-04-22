@@ -1,0 +1,42 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# -------------------------------
+# Create a small synthetic tweet dataset
+# -------------------------------
+data = {
+    "tweet": [
+        "Love the vibes in Mumbai!",
+        "Delhi traffic is crazy",
+        "Bangalore tech scene booming",
+        "Mumbai rains again",
+        "Delhi food is amazing",
+        "Chennai beaches are सुंदर",
+        "Mumbai nightlife rocks",
+        "Bangalore startups everywhere"
+    ],
+    "lat": [19.0760, 28.7041, 12.9716, 19.0760, 28.7041, 13.0827, 19.0760, 12.9716],
+    "lon": [72.8777, 77.1025, 77.5946, 72.8777, 77.1025, 80.2707, 72.8777, 77.5946],
+    "city": ["Mumbai", "Delhi", "Bangalore", "Mumbai", "Delhi", "Chennai", "Mumbai", "Bangalore"]
+}
+
+df = pd.DataFrame(data)
+
+# -------------------------------
+# Location Analysis
+# -------------------------------
+location_counts = df.groupby("city").size().reset_index(name="count")
+print(location_counts)
+
+# -------------------------------
+# Plot Tweet Locations
+# -------------------------------
+plt.scatter(df["lon"], df["lat"], s=100)
+
+for i, row in df.iterrows():
+    plt.text(row["lon"], row["lat"], row["city"])
+
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.title("Tweet Locations")
+plt.show()

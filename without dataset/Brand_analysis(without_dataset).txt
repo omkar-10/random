@@ -1,0 +1,27 @@
+import pandas as pd
+
+# -------------------------------
+# Dummy data (brand mentions)
+# -------------------------------
+d = pd.DataFrame({
+    "brand": ["Nike", "Nike", "Nike", "Adidas", "Adidas", "Adidas"],
+    "text": [
+        "love the shoes", "bad quality", "awesome product",
+        "not good", "great style", "too expensive"
+    ]
+})
+
+# -------------------------------
+# Simple sentiment rule
+# -------------------------------
+positive_words = ["love", "awesome", "great"]
+
+d["sent"] = d["text"].apply(
+    lambda x: "pos" if any(word in x.lower() for word in positive_words) else "neg"
+)
+
+# -------------------------------
+# Sentiment count per brand
+# -------------------------------
+result = d.groupby("brand")["sent"].value_counts()
+print(result)

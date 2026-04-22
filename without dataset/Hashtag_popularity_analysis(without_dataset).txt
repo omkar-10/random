@@ -1,0 +1,48 @@
+import pandas as pd
+from collections import Counter
+import re
+
+# -------------------------------
+# Synthetic dataset
+# -------------------------------
+data = {
+    "tweet": [
+        "Loving #AI and #Python",
+        "#AI is the future #ML",
+        "#Foodie life #Yummy",
+        "#Yummy #Delicious meals",
+        "#Travel #Adventure time",
+        "#Python coding #AI",
+        "#Adventure #Travel vibes"
+    ],
+    "user_group": ["Tech", "Tech", "Food", "Food", "Travel", "Tech", "Travel"]
+}
+
+df = pd.DataFrame(data)
+
+# -------------------------------
+# Function to extract hashtags
+# -------------------------------
+def extract_hashtags(text):
+    return re.findall(r"#\w+", text.lower())
+
+# -------------------------------
+# Extract hashtags
+# -------------------------------
+df["hashtags"] = df["tweet"].apply(extract_hashtags)
+
+# -------------------------------
+# Count hashtags per group
+# -------------------------------
+group_hashtags = {}
+
+for group in df["user_group"].unique():
+    all_tags = sum(df[df["user_group"] == group]["hashtags"], [])
+    group_hashtags[group] = Counter(all_tags)
+
+# -------------------------------
+# Display results
+# -------------------------------
+for group, tags in group_hashtags.items():
+    print(f"\n{group} Top Hashtags:")
+    print(tags.most_common(3))

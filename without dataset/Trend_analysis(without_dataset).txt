@@ -1,0 +1,46 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# -------------------------------
+# Create synthetic dataset with timestamps
+# -------------------------------
+data = {
+    "tweet": [
+        "AI is amazing", "Love Python", "Data science rocks",
+        "AI trending again", "Python everywhere", "Big data boom",
+        "AI revolution", "Learning Python"
+    ],
+    "time": [
+        "2024-01-01 10:00", "2024-01-01 11:00", "2024-01-01 12:00",
+        "2024-01-02 10:00", "2024-01-02 11:00", "2024-01-02 12:00",
+        "2024-01-03 10:00", "2024-01-03 11:00"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+# -------------------------------
+# Convert to datetime
+# -------------------------------
+df['time'] = pd.to_datetime(df['time'])
+
+# -------------------------------
+# Extract date
+# -------------------------------
+df['date'] = df['time'].dt.date
+
+# -------------------------------
+# Count tweets per day (Trend)
+# -------------------------------
+trend = df.groupby('date').size()
+print(trend)
+
+# -------------------------------
+# Plot trend
+# -------------------------------
+plt.plot(trend.index, trend.values, marker='o')
+plt.xlabel("Date")
+plt.ylabel("Number of Tweets")
+plt.title("Tweet Trend Over Time")
+plt.xticks(rotation=45)
+plt.show()

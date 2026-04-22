@@ -1,0 +1,33 @@
+import networkx as nx
+from networkx.algorithms.community import girvan_newman
+
+# -----------------------------
+# 1. Create Dummy Social Network
+# -----------------------------
+G = nx.Graph()
+
+# Add connections (edges)
+G.add_edges_from([
+    ("A", "B"), ("A", "C"), ("B", "C"),   # Community 1
+    ("D", "E"), ("D", "F"), ("E", "F"),   # Community 2
+    ("C", "D")  # Bridge between communities
+])
+
+# -----------------------------
+# 2. Community Detection
+# -----------------------------
+communities = girvan_newman(G)
+first_level = next(communities)
+
+print("Communities:")
+for i, comm in enumerate(first_level):
+    print(f"Community {i+1}:", list(comm))
+
+# -----------------------------
+# 3. Influential Users
+# -----------------------------
+centrality = nx.degree_centrality(G)
+
+print("\nInfluential Users:")
+for node, score in centrality.items():
+    print(node, ":", score)

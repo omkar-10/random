@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internet Network Authentication</title>
+    <link rel="icon" type="image/png" href="xie.png" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+
+      .tagline {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 18px;
+        text-align: center;
+      }
+
+      .logo-container {
+        margin-bottom: 14px;
+      }
+
+      .logo-container img {
+        width: 66px;
+        height: auto;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 368px;
+        perspective: 1200px;
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        min-height: 330px;
+        transform-style: preserve-3d;
+        transition: transform 0.55s ease;
+        cursor: pointer;
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-face {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        border: 1px solid #e9e9e9;
+        border-radius: 4px;
+        padding: 34px 22px 30px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        backface-visibility: hidden;
+      }
+
+      .card-back {
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 24px;
+      }
+
+      .back-subtitle {
+        font-size: 10px;
+        color: #666;
+        margin-top: -12px;
+        margin-bottom: 6px;
+        text-transform: lowercase;
+        opacity: 0.85;
+      }
+
+      .dataset-section {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+
+      .dataset-toggle {
+        border: none;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        color: #666;
+        padding: 2px 4px;
+      }
+
+      .dataset-arrow {
+        font-size: 9px;
+        transition: transform 0.2s ease;
+        transform-origin: center;
+      }
+
+      .dataset-toggle.open .dataset-arrow {
+        transform: rotate(90deg);
+      }
+
+      .code-links {
+        list-style: none;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        padding-right: 4px;
+        transition: max-height 0.25s ease;
+      }
+
+      .code-links.open {
+        max-height: 220px;
+        overflow-y: auto;
+      }
+
+      .code-links li {
+        margin-bottom: 7px;
+      }
+
+      .code-link-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .code-links .copy-link {
+        display: inline-block;
+        width: 100%;
+        font-size: 10px;
+        color: #1a5cb5;
+        text-decoration: none;
+        line-height: 1.3;
+        opacity: 0.9;
+      }
+
+      .code-links .copy-link:hover {
+        text-decoration: underline;
+      }
+
+      .download-icon {
+        flex: 0 0 auto;
+        font-size: 11px;
+        color: #2e9135;
+        text-decoration: none;
+        line-height: 1;
+        opacity: 0.9;
+      }
+
+      .download-icon:hover {
+        opacity: 1;
+      }
+
+      .copy-status {
+        margin-top: 10px;
+        font-size: 10px;
+        color: #2e9135;
+        min-height: 14px;
+        text-align: center;
+      }
+
+      .card-title {
+        color: #1a5cb5;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      .input-group {
+        margin-bottom: 22px;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #ccc;
+        border-radius: 18px;
+        font-size: 13px;
+        color: #333;
+        outline: none;
+        background: #fff;
+        transition: border-color 0.2s;
+      }
+
+      .input-group input::placeholder {
+        color: #aaa;
+      }
+
+      .input-group input:focus {
+        border-color: #1a5cb5;
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 11px;
+        background-color: #3cb043;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        margin-bottom: 30px;
+        letter-spacing: 0.5px;
+        transition: background 0.2s;
+      }
+
+      .btn-login:hover {
+        background-color: #2e9135;
+      }
+
+      .my-account-link {
+        display: block;
+        text-align: center;
+        font-size: 12px;
+        color: #444;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .my-account-link:hover {
+        text-decoration: underline;
+      }
+
+      .notice {
+        margin-top: 16px;
+        color: #d32f2f;
+        font-size: 13px;
+        text-align: center;
+        max-width: 368px;
+        line-height: 1.45;
+      }
+
+      .footer-info {
+        margin-top: 14px;
+        text-align: center;
+        color: #333;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="tagline">Joy of Excellence in the World of High Technology</p>
+
+    <div class="logo-container">
+      <img src="xie.png" alt="XIE Logo" />
+    </div>
+
+    <div class="card" id="flipCard">
+      <div class="card-inner" id="cardInner">
+        <div class="card-face card-front">
+          <div class="card-title">Internet Network Authentication</div>
+
+          <div class="input-group">
+            <input type="text" placeholder="Username" autocomplete="username" />
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              placeholder="Password"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button class="btn-login">Login</button>
+
+          <a class="my-account-link" href="#">Click here for User My Account</a>
+        </div>
+
+        <div class="card-face card-back">
+          <div class="card-title">Internet Network Authentication</div>
+          <div class="back-subtitle">Click a link to copy code</div>
+
+          <div class="dataset-section">
+            <button
+              class="dataset-toggle"
+              id="withDatasetToggle"
+              type="button"
+              aria-expanded="false"
+              data-target="withDatasetLinks"
+            >
+              <span class="dataset-arrow">&#9654;</span>
+              <span>with dataset</span>
+            </button>
+
+            <ul class="code-links" id="withDatasetLinks">
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Brand_analysis.txt"
+                    >Brand analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Brand_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Brand analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Content_analysis.txt"
+                    >Content analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Content_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Content analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Exploratory_Data_Analysis_and_visualization.txt"
+                    >Exploratory data analysis and visualization</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Exploratory_Data_Analysis_and_visualization.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Exploratory data analysis and visualization notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Hashtag_popularity_analysis.txt"
+                    >Hashtag popularity analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Hashtag_popularity_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Hashtag popularity analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Location_analysis.txt"
+                    >Location analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Location_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Location analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Sentiment_Analysis_for_given_dataset.txt"
+                    >Sentiment analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Sentiment_Analysis_for_given_dataset.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Sentiment analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Social_Network_data_analysis.txt"
+                    >Social network data analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Social_Network_data_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Social network data analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/Trend_analysis.txt"
+                    >Trend analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/Trend_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download Trend analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="code-link-row">
+                  <a
+                    class="copy-link"
+                    href="#"
+                    data-file="with dataset/User_engagement_analysis.txt"
+                    >User engagement analysis</a
+                  >
+                  <a
+                    class="download-icon"
+                    href="with dataset/User_engagement_analysis.ipynb"
+                    download
+                    title="Download .ipynb"
+                    aria-label="Download User engagement analysis notebook"
+                    >&#8681;</a
+                  >
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="dataset-section">
+            <button
+              class="dataset-toggle"
+              id="withoutDatasetToggle"
+              type="button"
+              aria-expanded="false"
+              data-target="withoutDatasetLinks"
+            >
+              <span class="dataset-arrow">&#9654;</span>
+              <span>without dataset</span>
+            </button>
+
+            <ul class="code-links" id="withoutDatasetLinks">
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Brand_analysis(without_dataset).txt"
+                  >Brand analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Content_analysis(without_Dataset).txt"
+                  >Content analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Exploratory_Data_Analysis_and_visualization(without_dataset).txt"
+                  >Exploratory data analysis and visualization</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Hashtag_popularity_analysis(without_dataset).txt"
+                  >Hashtag popularity analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Location_analysis(without_dataset).txt"
+                  >Location analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Sentiment_Analysis(without_dataset).txt"
+                  >Sentiment analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Social_Network_data_analysis(without_dataset)_.txt"
+                  >Social network data analysis</a
+                >
+              </li>
+              <li>
+                <a
+                  class="copy-link"
+                  href="#"
+                  data-file="without dataset/Trend_analysis(without_dataset).txt"
+                  >Trend analysis</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="copy-status" id="copyStatus"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="notice">
+      Students Please use your Collge ID as your Login and Password
+    </p>
+
+    <div class="footer-info">
+      Forgot Password send an Email<br />
+      To: support@xavier.ac.in<br />
+      from: StudentsCollegeID@students.xavier.ac.in
+    </div>
+
+    <script>
+      (function () {
+        const flipCard = document.getElementById("flipCard");
+        const cardInner = document.getElementById("cardInner");
+        const copyStatus = document.getElementById("copyStatus");
+        const datasetToggles = cardInner.querySelectorAll(".dataset-toggle");
+        const codeLinks = cardInner.querySelectorAll(".code-links");
+
+        function writeToClipboard(text) {
+          if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+          }
+
+          const tempTextArea = document.createElement("textarea");
+          tempTextArea.value = text;
+          tempTextArea.style.position = "fixed";
+          tempTextArea.style.left = "-9999px";
+          document.body.appendChild(tempTextArea);
+          tempTextArea.focus();
+          tempTextArea.select();
+
+          try {
+            const copied = document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+            if (!copied) {
+              throw new Error("Copy command failed");
+            }
+            return Promise.resolve();
+          } catch (error) {
+            document.body.removeChild(tempTextArea);
+            return Promise.reject(error);
+          }
+        }
+
+        flipCard.addEventListener("click", function () {
+          flipCard.classList.toggle("flipped");
+          if (flipCard.classList.contains("flipped")) {
+            copyStatus.textContent = "";
+          } else {
+            copyStatus.textContent = "";
+            codeLinks.forEach(function (list) {
+              list.classList.remove("open");
+            });
+            datasetToggles.forEach(function (toggle) {
+              toggle.classList.remove("open");
+              toggle.setAttribute("aria-expanded", "false");
+            });
+          }
+        });
+
+        datasetToggles.forEach(function (toggle) {
+          toggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+            const targetId = toggle.getAttribute("data-target");
+            if (!targetId) {
+              return;
+            }
+
+            const targetList = document.getElementById(targetId);
+            if (!targetList) {
+              return;
+            }
+
+            const isOpen = targetList.classList.toggle("open");
+            toggle.classList.toggle("open", isOpen);
+            toggle.setAttribute("aria-expanded", String(isOpen));
+            copyStatus.textContent = "";
+            copyStatus.style.color = "#666";
+          });
+        });
+
+        cardInner
+          .querySelectorAll("input, .btn-login, .my-account-link")
+          .forEach(function (el) {
+            el.addEventListener("click", function (event) {
+              event.stopPropagation();
+            });
+          });
+
+        cardInner.querySelectorAll(".copy-link").forEach(function (link) {
+          link.addEventListener("click", async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const filePath = link.getAttribute("data-file");
+
+            if (!filePath) {
+              copyStatus.textContent = "Could not find file path";
+              copyStatus.style.color = "#d32f2f";
+              return;
+            }
+
+            copyStatus.textContent = "Copying...";
+            copyStatus.style.color = "#666";
+
+            try {
+              const response = await fetch(encodeURI(filePath));
+              if (!response.ok) {
+                throw new Error("Could not read file");
+              }
+              const code = await response.text();
+              await writeToClipboard(code);
+              copyStatus.textContent = "Copied: " + link.textContent;
+              copyStatus.style.color = "#2e9135";
+            } catch (error) {
+              copyStatus.textContent =
+                "Copy failed. Open through a local server.";
+              copyStatus.style.color = "#d32f2f";
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
