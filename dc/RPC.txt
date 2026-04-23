@@ -1,0 +1,16 @@
+client.py
+ 
+import xmlrpc.client
+proxy = xmlrpc.client.ServerProxy("http://localhost:8000/")
+print("3 + 5 =", proxy.add(3, 5))
+ 
+ 
+server.py
+ 
+from xmlrpc.server import SimpleXMLRPCServer
+def add(x, y):
+	return x + y
+server = SimpleXMLRPCServer(("localhost", 8000))
+server.register_function(add, "add")
+print("Server is running...")
+server.serve_forever()

@@ -1,0 +1,23 @@
+processes = [1, 2, 3, 4, 5]
+alive = [True, True, True, True, False]  # Process 5 is dead
+
+def bully(initiator):
+    print("Process", initiator, "starts election")
+
+    higher = []
+    for i in range(len(processes)):
+        if processes[i] > initiator and alive[i]:
+            higher.append(processes[i])
+
+    if not higher:
+        print("Process", initiator, "becomes Coordinator")
+        return initiator
+    else:
+        print("Higher processes:", higher)
+        return bully(max(higher))
+
+
+# Start election from process 2
+leader = bully(2)
+
+print("Final Leader is Process", leader)

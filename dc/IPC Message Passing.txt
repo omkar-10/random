@@ -1,0 +1,19 @@
+1. IPC using message passing (start with receiver then sender)
+Sender:
+from multiprocessing.connection import Client
+address = ('localhost', 6000)
+conn = Client(address, authkey=b'abc')
+msg = input("Enter message to send: ")
+conn.send(msg)
+conn.close()
+ 
+Receiver: (run first)
+from multiprocessing.connection import Listener
+address = ('localhost', 6000)
+listener = Listener(address, authkey=b'abc')
+print("Receiver waiting for message...")
+conn = listener.accept()
+msg = conn.recv()
+print("Message received:", msg)
+conn.close()
+listener.close()

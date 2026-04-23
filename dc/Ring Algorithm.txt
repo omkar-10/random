@@ -1,0 +1,33 @@
+def ring_algorithm(processes, initiator):
+    print("Election started by Process", processes[initiator])
+    ring = processes[initiator:] + processes[:initiator]
+    print("Ring order:", ring)
+    token = ring[0]
+    print(f"Initial token: {token}")
+    
+    # Election Phase
+    for i in range(1, len(ring)):
+        current = ring[i]
+        print(f"\nProcess {current} received token {token}")
+        
+        if current > token:
+            print(f"Process {current} replaces token {token} with {current}")
+            token = current
+        else:
+            print(f"Process {current} forwards token {token}")
+    
+    print(f"\nToken returned to initiator: {token}")
+    print(f"Process {token} becomes Coordinator")
+    
+    # Coordinator Announcement (important)
+    print("\nCoordinator Announcement:")
+    for p in ring:
+        print(f"Process {p} acknowledges Coordinator {token}")
+    
+    return token
+
+# Example
+processes = [1, 2, 3, 4, 5]
+leader = ring_algorithm(processes, 2)
+
+print("\nFinal Leader is Process", leader)

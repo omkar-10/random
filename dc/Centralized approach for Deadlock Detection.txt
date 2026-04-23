@@ -1,0 +1,31 @@
+# Wait-For Graph
+graph = {
+    1: [2],
+    2: [3],
+    3: [1]   # cycle → deadlock ( if u remove this no deadlock)
+}
+
+def detect_deadlock(graph):
+    def dfs(node, visited):
+        if node in visited:
+            return True
+        visited.add(node)
+
+        for n in graph.get(node, []):
+            if dfs(n, visited):
+                return True
+
+        visited.remove(node)
+        return False
+
+    for p in graph:
+        if dfs(p, set()):
+            return True
+    return False
+
+
+# Demonstration
+if detect_deadlock(graph):
+    print("Deadlock Detected")
+else:
+    print("No Deadlock")

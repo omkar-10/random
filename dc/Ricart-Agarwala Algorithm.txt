@@ -1,0 +1,23 @@
+processes = [1, 2, 3]
+requesting = [False] * 3
+timestamp = [0] * 3
+
+def request_cs(pid, time):
+    print(f"\nProcess {pid} requests Critical Section")
+    requesting[pid-1] = True
+    timestamp[pid-1] = time
+
+    for i in processes:
+        if i != pid:
+            print(f"Process {pid} sends REQUEST to {i}")
+    print(f"Process {pid} enters Critical Section")
+
+def release_cs(pid):
+    print(f"Process {pid} exits Critical Section")
+    requesting[pid-1] = False
+
+# Example
+request_cs(1, 1)
+release_cs(1)
+request_cs(2, 2)
+release_cs(2)

@@ -1,0 +1,29 @@
+servers = {
+    "Server A": 2,
+    "Server B": 1,
+    "Server C": 3
+}
+
+def least_connection():
+    # find server with minimum load
+    server = min(servers, key=servers.get)
+    servers[server] += 1
+    return server
+
+def release_connection(server):
+    # simulate request completion
+    if servers[server] > 0:
+        servers[server] -= 1
+
+# Initial state
+print("Initial Server Load:", servers)
+
+# Demonstration
+for i in range(6):
+    s = least_connection()
+    print(f"\nRequest {i+1} assigned to {s}")
+    print("Load after assignment:", servers)
+
+    # simulate completion (optional)
+    release_connection(s)
+    print("Load after completion:", servers)

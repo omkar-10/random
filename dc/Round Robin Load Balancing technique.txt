@@ -1,0 +1,16 @@
+class RoundRobinLoadBalancer:
+    def __init__(self, servers):
+        self.servers = servers
+        self.index = 0
+
+    def get_server(self):
+        server = self.servers[self.index]
+        self.index = (self.index + 1) % len(self.servers)
+        return server
+
+servers = ["Server A", "Server B", "Server C"]
+
+lb = RoundRobinLoadBalancer(servers)
+
+for i in range(6):
+    print(f"Request {i+1} handled by {lb.get_server()}")
